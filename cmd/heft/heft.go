@@ -30,6 +30,14 @@ func main() {
 		log.Fatal(parsedURLErr)
 	}
 
-	internal.PerformRequestTests(URL, numReq, concReq)
+	testResult := internal.PerformRequestTests(URL, numReq, concReq)
 
+	log.Println("Total Requests (2XX).......................:", testResult.Success)
+	log.Println("Failed Requests (5XX)......................:", testResult.Failure)
+	log.Println("Requests/Second......................:", testResult.RequestsPerSec)
+
+	log.Println("\n----------------------------------------------------------\n")
+	log.Println("Total Request Time (s) (Min, Max, Mean):", testResult.TotalTimeStats)
+	log.Println("Time to First Byte (s) (Min, Max, Mean):", testResult.FirstByteStats)
+	log.Println("Time to Last Byte (s) (Min, Max, Mean):", testResult.LastByteStats)
 }
