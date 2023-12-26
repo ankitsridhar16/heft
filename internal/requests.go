@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// TestResult holds performance test results
 type TestResult struct {
 	Success        int64
 	Failure        int64
@@ -20,6 +21,7 @@ type TestResult struct {
 	LastByteStats  Stats
 }
 
+// Stats holds summary statistics for a duration
 type Stats struct {
 	Min   time.Duration
 	Max   time.Duration
@@ -27,6 +29,7 @@ type Stats struct {
 	Count int
 }
 
+// PerformRequestTests performs HTTP request tests and returns TestResult
 func PerformRequestTests(URL *string, numReq *int, concReq *int) TestResult {
 	log.Println("***** Performing test *****")
 	log.Println("URL:", *URL)
@@ -49,7 +52,8 @@ func PerformRequestTests(URL *string, numReq *int, concReq *int) TestResult {
 
 	for i := 0; i < *numReq; i++ {
 		wg.Add(1)
-		go performTest(*URL, *numReq / *concReq, &wg, done, &client, &success, &failure, &totalTime, &firstByteTime, &lastByteTime)
+		go performTest(*URL, *numReq / *concReq, &wg, done, &client, &success, &failure,
+			&totalTime, &firstByteTime, &lastByteTime)
 	}
 
 	wg.Wait()
@@ -73,16 +77,19 @@ func PerformRequestTests(URL *string, numReq *int, concReq *int) TestResult {
 	}
 }
 
+// calculateStats calculates basic statistics for a duration
 func calculateStats(duration time.Duration, count int) Stats {
 	return Stats{
-		Min:   time.Duration(0), // Placeholder for Min value
+		Min:   time.Duration(0),
 		Max:   duration,
 		Mean:  duration / time.Duration(count),
 		Count: count,
 	}
 }
 
-func performTest(URL string, numReq int, wg *sync.WaitGroup, done chan struct{}, client *http.Client, success *int64, failure *int64, totalTime, firstByteTime, lastByteTime *time.Duration) {
+// performTest performs a single request test
+func performTest(URL string, numReq int, wg *sync.WaitGroup, done chan struct{},
+	client *http.Client, success *int64, failure *int64, totalTime, firstByteTime, lastByteTime *time.Duration) {
 	defer wg.Done()
 
 	for i := 0; i < numReq; i++ {
