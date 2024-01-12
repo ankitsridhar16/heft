@@ -15,6 +15,7 @@ func ParseURL(URL string) error {
 	_, parseErr := url.Parse(URL)
 	if parseErr != nil {
 		log.Fatal(parseErr)
+		return parseErr
 	}
 
 	return nil
